@@ -8,7 +8,13 @@ public class LazerProfile : ScriptableObject
 {
     [SerializeField]private Material material;
     [SerializeField]private Mesh lazerMesh;
-
+    [SerializeField] private ComputeShader _computeShader;
     public Material LazerMaterial => material;
     public Mesh LazerMesh => lazerMesh;
+    public ComputeShader ComputeShader => _computeShader;
+
+    public bool ValidateCheck()
+    {
+        return material && lazerMesh && _computeShader;
+    }
 }

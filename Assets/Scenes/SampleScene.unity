@@ -195,6 +195,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: lazer
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8b8aca87b4cc116479713554e1cfdc58,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4167280743394806330, guid: 8b8aca87b4cc116479713554e1cfdc58,
         type: 3}
       propertyPath: m_LocalPosition.z
@@ -529,7 +534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &934322842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,9 +587,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: fb0922b65928f6d468300aba321f76a7, type: 2}
-  maxLazerCount: 16
-  lazerLength: 144.72
-  width: 1.37
+  maxLazerCount: 25
+  lazerLength: 157.6
+  width: 19.6
 --- !u!1 &2009999398
 GameObject:
   m_ObjectHideFlags: 0

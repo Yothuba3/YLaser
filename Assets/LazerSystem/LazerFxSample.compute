@@ -1,0 +1,16 @@
+#pragma kernel CSMain
+
+
+RWStructuredBuffer<float3>buffers;
+int lazerCount;
+int fxMode;
+float fxWidth;
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+   fxWidth = 50.0;
+   float padding = fxWidth / lazerCount;
+   buffers[id.x] = float3(padding * id.x - abs(fxWidth/2.0), 0,0);
+   buffers[id.x] = float3(padding * id.x - abs(fxWidth/2.0), 0,0);
+}

@@ -15,3 +15,4 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 381275cd653e4304aa30fc533ebec636, type: 2}
   lazerMesh: {fileID: -8023080413318814639, guid: 3d823e961a17e904d8dd55556353087a,
     type: 3}
+  _computeShader: {fileID: 7200000, guid: dae7cd016a4aa4ff4904e92882cc00c4, type: 3}
