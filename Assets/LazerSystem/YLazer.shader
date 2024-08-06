@@ -39,7 +39,7 @@ Shader "YLazer"
             
 
             CBUFFER_START(UnityPerMaterial);
-                uniform StructuredBuffer<float2> _Positions;
+                uniform StructuredBuffer<float3> _Positions;
                 uniform float4x4 _ObjectToWorld;
                 uniform float _lazerLength;
                 uniform float width;
@@ -67,10 +67,26 @@ Shader "YLazer"
                 */
                 
                 /*ComputeBufferから取得した位置情報を使って座標更新*/
-                v.vertex.xy += _Positions[instanceID].xy*v.color.r;
+                v.vertex.x += _Positions[instanceID].x*v.color.r;
+                v.vertex.y += _Positions[instanceID].y*v.color.r;
+
+
+                float3 viewPos = UnityObjectToViewPos(float3(0, 0, 0));
+                    
+                    // スケールと回転（平行移動なし）だけModel変換して、View変換はスキップ
+                    float3 scaleRotatePos = mul((float3x3)unity_ObjectToWorld, v.vertex);
+                    
+                    // scaleRotatePosを右手系に変換して、viewPosに加算
+                    // 本来はView変換で暗黙的にZが反転されているので、
+                    // View変換をスキップする場合は明示的にZを反転する必要がある
+                    viewPos += float3(scaleRotatePos.xy, -scaleRotatePos.z);
+                    
+                    o.pos = mul(UNITY_MATRIX_P, float4(viewPos, 1));
+                
                 
                 float4 wpos = mul(_ObjectToWorld, v.vertex);
-                o.pos = mul(UNITY_MATRIX_VP, wpos);
+                //o.pos = UnityObjectToClipPos(float4(billboardPos,1.0));
+                //o.pos = mul(UNITY_MATRIX_VP, billboardPos);
                 o.color = _Color;
 
                 return o;

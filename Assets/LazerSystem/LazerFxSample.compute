@@ -5,12 +5,37 @@ RWStructuredBuffer<float3>buffers;
 int lazerCount;
 int fxMode;
 float fxWidth;
+float4 _Time;
 
-[numthreads(1,1,1)]
+
+
+float3 ArchStatic(uint3 id)
+{
+   float padding = fxWidth / lazerCount;
+   return float3(padding * id.x - abs(fxWidth/2.0), 0,0);
+}
+
+float3 SineWave(uint3 id)
+{
+   float padding = fxWidth / lazerCount;
+   return float3(padding * id.x - abs(fxWidth/2.0), sin(id.x*_Time.x),0);
+}
+
+
+
+[numthreads(8,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-   fxWidth = 50.0;
-   float padding = fxWidth / lazerCount;
-   buffers[id.x] = float3(padding * id.x - abs(fxWidth/2.0), 0,0);
-   buffers[id.x] = float3(padding * id.x - abs(fxWidth/2.0), 0,0);
+   float3 pos;
+   if(fxMode == 0)
+   {
+      pos = ArchStatic(id);
+   }
+   else if(fxMode == 1)
+   {
+      pos = SineWave(id);
+   }
+   buffers[id.x] = pos;
+   //buffers[id.x] = float3(padding * id.x - abs(fxWidth/2.0), 0,0);
 }
+

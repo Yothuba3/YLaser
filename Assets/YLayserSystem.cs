@@ -12,7 +12,9 @@ public class YLayserSystem : MonoBehaviour
     public uint maxLazerCount=5;
     public float lazerLength;
     public float width;
-
+    public float fxWidth;
+    public uint fxMode=0;
+    
     private int _kernel;
     private ComputeShader cs;
     
@@ -22,9 +24,9 @@ public class YLayserSystem : MonoBehaviour
     const int commandCount = 1;
 
     private static readonly int BufferID = Shader.PropertyToID("buffers");
-    private static readonly int fxMode = Shader.PropertyToID("fxMode");
-    private static readonly int fxWidth = Shader.PropertyToID("fxWidth");
-    private static readonly int LazerCount = Shader.PropertyToID("lazerCount");
+    private static readonly int fxModeID = Shader.PropertyToID("fxMode");
+    private static readonly int fxWidthID = Shader.PropertyToID("fxWidth");
+    private static readonly int LazerCountID = Shader.PropertyToID("lazerCount");
     
     private static readonly int posBuf = Shader.PropertyToID("_Positions");
     void Start()
@@ -57,9 +59,10 @@ public class YLayserSystem : MonoBehaviour
         if (!profile.ValidateCheck()) return;
                 _kernel = cs.FindKernel("CSMain");
 
-        cs.SetInt(LazerCount,(int)maxLazerCount);
-        cs.SetInt(fxMode, 0);
-        cs.SetFloat(fxWidth, width);
+        cs.SetInt(LazerCountID,(int)maxLazerCount);
+        cs.SetInt(fxModeID, (int)fxMode);
+        cs.SetFloat(fxWidthID, fxWidth);
+        cs.SetVector("_Time", Shader.GetGlobalVector ("_Time"));
         
         var buffer = new ComputeBuffer((int)maxLazerCount, Marshal.SizeOf(typeof(float3)));
         cs.SetBuffer(_kernel, BufferID, buffer);
@@ -84,8 +87,10 @@ public class YLayserSystem : MonoBehaviour
         
         RenderParams rp = new RenderParams(profile.LazerMaterial);
         rp.worldBounds = new Bounds(Vector3.zero, 10000*Vector3.one); // use tighter bounds for better FOV culling
-        rp.matProps.SetBuffer(posBuf,positionBuffer);
+        
         rp.matProps = new MaterialPropertyBlock();
+        
+        rp.matProps.SetBuffer(posBuf,positionBuffer);
         rp.matProps.SetMatrix("_ObjectToWorld", Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale));
         rp.matProps.SetFloat("_lazerLength", lazerLength);
         rp.matProps.SetFloat("width", width);
@@ -93,5 +98,7 @@ public class YLayserSystem : MonoBehaviour
         commandData[0].instanceCount = maxLazerCount;
         commandBuf.SetData(commandData);
         Graphics.RenderMeshIndirect(rp, profile.LazerMesh, commandBuf, commandCount);
+        buffer.Release();
+        positionBuffer.Release();
     }
 }
